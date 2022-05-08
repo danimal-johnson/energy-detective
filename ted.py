@@ -41,6 +41,7 @@
 
 import serial
 import time
+import datetime
 import binascii
 import sys
 import struct
@@ -172,14 +173,18 @@ class Packet(object):
 
 def main():
     t = TED(sys.argv[1])
+    last_packet = ""
     while True:
         for packet in t.poll():
             print
-            print "%d byte packet: %r" % (
+            current_packet = "%d byte packet: %r" % (
                 len(packet.data), binascii.b2a_hex(packet.data))
-            print
-            for name, value in packet.fields.items():
-                print "%s = %s" % (name, value)
+            if current_packet != last_packet:
+                print (current_packet)
+                print (datetime.datetime.now())
+                print
+                for name, value in packet.fields.items():
+                    print "%s = %s" % (name, value)
 
         time.sleep(1.0)
 
